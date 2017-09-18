@@ -44,8 +44,8 @@ router.post('/v1/ref', (req, res, next) => {
       const userInfoCountry = await findUserCountry({ name: usercountryname }, usercountryname);//查看国家
       const userInfoState = await findUserState({ name: userstatename }, userstatename);//查看州
       const userInfoCity = await findUserCity({ name: usercityname }, usercityname);//查看城市
-      const userInfo = await findUser({ username: username, }, username,userpwd,userage);//查看用户信息
-      const updateInfoUser = await updateUser({ _id: userInfo },userInfoCity);//更新用户信息
+      const userInfo = await findUser({ username: username, }, username, userpwd, userage);//查看用户信息
+      const updateInfoUser = await updateUser({ _id: userInfo }, userInfoCity);//更新用户信息
       const updateInfoCity = await updateCity({ _id: userInfoCity }, userInfoState);//更新城市信息
       const updateInfoState = await updateState({ _id: userInfoState }, userInfoCountry);//更新州信息
       return res.json(respondData);
@@ -135,7 +135,7 @@ router.post('/v1/ref', (req, res, next) => {
       });
     })
   }
-  const findUser = async function (cnd, username,userpwd,userage) {
+  const findUser = async function (cnd, username, userpwd, userage) {
     console.log("findUser start --> " + JSON.stringify(cnd));
     return new Promise(function (resolve, reject) {
       User.findOne(cnd, function (error, data) {
@@ -148,8 +148,8 @@ router.post('/v1/ref', (req, res, next) => {
         } else {
           const userInfo = new User({
             username: username,
-            userpwd:userpwd,
-            userage:userage
+            userpwd: userpwd,
+            userage: userage
           });
           userInfo.save(function (err, data) {
             if (err) {
@@ -163,7 +163,7 @@ router.post('/v1/ref', (req, res, next) => {
       });
     })
   }
-  const updateUser = async function (cnd,cityid) {
+  const updateUser = async function (cnd, cityid) {
     console.log("updateUser start --> " + JSON.stringify(cnd));
     return new Promise(function (resolve, reject) {
       User.update(cnd, { $set: { city: cityid } }, function (error, data) {
@@ -199,7 +199,7 @@ router.post('/v1/ref', (req, res, next) => {
       });
     })
   }
-  user_getCountryList(req,res);
+  user_getCountryList(req, res);
 });
 
 module.exports = router;
