@@ -153,5 +153,5 @@ mongoose.connect('mongodb://localhost:27017/ref');
 ```
 使用postman模拟接口如下
 ![Postman模拟接口关联查询](https://github.com/wang-weifeng/picture/blob/master/mongoose-ref/getInfo.png)
-#### 当然这个关联查询也可以使用promise-async-await不过有时候看着这回掉，层层包含还挺好看，或者这也是js的一大美感呢
+#### 当然这个关联查询也可以使用promise-async-await不过有时候看着这回调，层层包含还挺好看，或者这也是js的一大美感呢
     
