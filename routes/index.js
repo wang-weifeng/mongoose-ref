@@ -2,31 +2,32 @@ const express = require('express');
 const router = express.Router();
 const mongoose = require('mongoose');
 mongoose.connect('mongodb://localhost:27017/ref');
+
+const Schema = mongoose.Schema;
+const ObjectId = Schema.Types.ObjectId;
+const UserSchema = new Schema({
+  username: { type: String },
+  userpwd: { type: String },
+  userage: { type: Number },
+  city: { type: Schema.Types.ObjectId, ref: 'City' },
+});
+const CitySchema = new Schema({
+  name: { type: String },
+  state: { type: Schema.Types.ObjectId, ref: 'State' }
+});
+const StateSchema = new Schema({
+  name: { type: String },
+  country: { type: Schema.Types.ObjectId, ref: 'Country' }
+});
+const CountrySchema = new Schema({
+  name: { type: String }
+});
+const User = mongoose.model('User', UserSchema);
+const City = mongoose.model('City', CitySchema);
+const State = mongoose.model('State', StateSchema);
+const Country = mongoose.model('Country', CountrySchema);
 /* GET home page. */
 router.post('/v1/ref', (req, res, next) => {
-  const Schema = mongoose.Schema;
-  const ObjectId = Schema.Types.ObjectId;
-  const UserSchema = new Schema({
-    username: { type: String },
-    userpwd: { type: String },
-    userage: { type: Number },
-    city: { type: Schema.Types.ObjectId, ref: 'City' },
-  });
-  const CitySchema = new Schema({
-    name: { type: String },
-    state: { type: Schema.Types.ObjectId, ref: 'State' }
-  });
-  const StateSchema = new Schema({
-    name: { type: String },
-    country: { type: Schema.Types.ObjectId, ref: 'Country' }
-  });
-  const CountrySchema = new Schema({
-    name: { type: String }
-  });
-  const User = mongoose.model('User', UserSchema);
-  const City = mongoose.model('City', CitySchema);
-  const State = mongoose.model('State', StateSchema);
-  const Country = mongoose.model('Country', CountrySchema);
   const user_getCountryList = async function (req, res) {
     console.log("/v1/ref start -->" + JSON.stringify(req.body));
     try {
@@ -201,5 +202,35 @@ router.post('/v1/ref', (req, res, next) => {
   }
   user_getCountryList(req, res);
 });
+
+router.get('/v1/getInfo', (req, res, next) => {
+  const respondData = {
+    status: res.statusCode,
+    data: [],
+    error: {}
+  };
+  let user_name = req.query.username; 
+  User.find({username:user_name})
+  .populate('city')
+  .exec(function(err, docs) {
+      City.find({_id:docs[0].city._id})
+      .populate('state')
+      .exec(function(err, doc) {
+        State.find({_id:doc[0].state._id})
+        .populate('country')
+        .exec(function(err, result) {
+          const userInfo = {};
+          userInfo.username = docs[0].username;
+          userInfo.userpwd = docs[0].userpwd;
+          userInfo.userage = docs[0].userage;
+          userInfo.usercity = doc[0].name;
+          userInfo.userstate = result[0].name;
+          userInfo.usercountry = result[0].country.name;
+          respondData.data.push(userInfo);
+          return res.json(respondData);
+        })
+      })
+  });
+})
 
 module.exports = router;
