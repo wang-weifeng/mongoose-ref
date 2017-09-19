@@ -127,5 +127,31 @@ mongoose.connect('mongodb://localhost:27017/ref');
 ![City表中数据](https://github.com/wang-weifeng/picture/blob/master/mongoose-ref/user.png)
 同理user->city->state->country数据都可以写进不同的表中。
 ### 5.使用populate关联查询
-
+当传入username 时,使用populate关联查询,可以查询出这个人的所以信息
+```js
+ User.find({ username: user_name })
+    .populate('city')
+    .exec(function (err, docs) {
+      City.find({ _id: docs[0].city._id })
+        .populate('state')
+        .exec(function (err, doc) {
+          State.find({ _id: doc[0].state._id })
+            .populate('country')
+            .exec(function (err, result) {
+              const userInfo = {};
+              userInfo.username = docs[0].username;
+              userInfo.userpwd = docs[0].userpwd;
+              userInfo.userage = docs[0].userage;
+              userInfo.usercity = doc[0].name;
+              userInfo.userstate = result[0].name;
+              userInfo.usercountry = result[0].country.name;
+              respondData.data.push(userInfo);
+              return res.json(respondData);
+            })
+        })
+    });
+```
+使用postman模拟接口如下
+![Postman模拟接口关联查询](https://github.com/wang-weifeng/picture/blob/master/mongoose-ref/getInfo.png)
+#### 当然这个关联查询也可以使用promise-async-await不过有时候看着这回掉，层层包含还挺好看，或者这也是js的一大美感呢
     

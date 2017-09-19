@@ -209,28 +209,28 @@ router.get('/v1/getInfo', (req, res, next) => {
     data: [],
     error: {}
   };
-  let user_name = req.query.username; 
-  User.find({username:user_name})
-  .populate('city')
-  .exec(function(err, docs) {
-      City.find({_id:docs[0].city._id})
-      .populate('state')
-      .exec(function(err, doc) {
-        State.find({_id:doc[0].state._id})
-        .populate('country')
-        .exec(function(err, result) {
-          const userInfo = {};
-          userInfo.username = docs[0].username;
-          userInfo.userpwd = docs[0].userpwd;
-          userInfo.userage = docs[0].userage;
-          userInfo.usercity = doc[0].name;
-          userInfo.userstate = result[0].name;
-          userInfo.usercountry = result[0].country.name;
-          respondData.data.push(userInfo);
-          return res.json(respondData);
+  let user_name = req.query.username;
+  User.find({ username: user_name })
+    .populate('city')
+    .exec(function (err, docs) {
+      City.find({ _id: docs[0].city._id })
+        .populate('state')
+        .exec(function (err, doc) {
+          State.find({ _id: doc[0].state._id })
+            .populate('country')
+            .exec(function (err, result) {
+              const userInfo = {};
+              userInfo.username = docs[0].username;
+              userInfo.userpwd = docs[0].userpwd;
+              userInfo.userage = docs[0].userage;
+              userInfo.usercity = doc[0].name;
+              userInfo.userstate = result[0].name;
+              userInfo.usercountry = result[0].country.name;
+              respondData.data.push(userInfo);
+              return res.json(respondData);
+            })
         })
-      })
-  });
+    });
 })
 
 module.exports = router;
