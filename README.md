@@ -120,6 +120,8 @@ mongoose.connect('mongodb://localhost:27017/ref');
     })
   }
 ```
+可以使用postman模拟数据，如图：
+![Postman模拟接口请求](https://github.com/wang-weifeng/picture/blob/master/mongoose-ref/postman.png)
 这时就把City对应的_id写进了User表中，可以查看表，如图：
 ![User表中数据](https://github.com/wang-weifeng/picture/blob/master/mongoose-ref/city.png)
 ![City表中数据](https://github.com/wang-weifeng/picture/blob/master/mongoose-ref/user.png)
