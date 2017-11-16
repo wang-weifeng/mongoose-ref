@@ -232,5 +232,21 @@ router.get('/v1/getInfo', (req, res, next) => {
         })
     });
 })
+router.get('/v1/getInfot', (req, res, next) => {
+  const respondData = {
+    status: res.statusCode,
+    data: [],
+    error: {}
+  };
+  let user_name = req.query.username;
+  User.find({ username: "wwf" })
+    .populate('city')
+    .exec(function (err, docs) {
+      console.log(docs);
+      console.log(docs.length);
+      respondData.data.push(docs);
+      return res.json(respondData);
+    });
+})
 
 module.exports = router;
